@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -6,10 +6,7 @@ export default function Profile() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  const handleLogout = () => { logout(); navigate('/login'); };
 
   return (
     <div className="app-shell">
@@ -17,69 +14,61 @@ export default function Profile() {
         <button className="back-btn" onClick={() => navigate('/')}>← Back</button>
 
         {/* Avatar */}
-        <div style={{textAlign:'center',padding:'20px 0 28px'}}>
+        <div className="fade-up" style={{ textAlign: 'center', padding: '16px 0 28px' }}>
           <div style={{
-            width:72,height:72,borderRadius:'50%',
-            background:'var(--mint-dim)',border:'2px solid rgba(2,195,154,0.3)',
-            display:'flex',alignItems:'center',justifyContent:'center',
-            color:'var(--mint)',fontWeight:700,fontSize:28,
-            fontFamily:'Syne,sans-serif',margin:'0 auto 14px',
+            width: 72, height: 72, borderRadius: '50%',
+            background: 'var(--white)', margin: '0 auto 16px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: 'var(--black)', fontWeight: 700, fontSize: 28,
+            fontFamily: 'Playfair Display,serif',
           }}>
             {user?.name?.[0]?.toUpperCase()}
           </div>
-          <h2>{user?.name}</h2>
-          <p style={{color:'var(--muted)',fontSize:13,marginTop:4}}>{user?.phone}</p>
+          <h2 style={{ fontSize: 20 }}>{user?.name}</h2>
+          <p style={{ color: 'var(--gray3)', fontSize: 13, marginTop: 4 }}>{user?.phone}</p>
           <span style={{
-            display:'inline-block',marginTop:8,
-            background:'var(--mint-dim)',color:'var(--mint)',
-            fontSize:10,fontWeight:600,padding:'4px 12px',
-            borderRadius:20,letterSpacing:.8,textTransform:'uppercase',
+            display: 'inline-block', marginTop: 10,
+            background: 'var(--dark2)', color: 'var(--gray4)',
+            fontSize: 10, fontWeight: 600, padding: '5px 14px',
+            borderRadius: 20, letterSpacing: .8, textTransform: 'uppercase',
+            border: '1px solid var(--border2)',
           }}>
-            {user?.role === 'admin' ? '⚙️ Admin' : '👤 Citizen'}
+            {user?.role === 'admin' ? 'Administrator' : 'Citizen'}
           </span>
         </div>
 
-        <div className="divider"/>
+        <div className="divider fade-up-2" />
 
-        {/* Info cards */}
-        <p className="section-label">Account details</p>
+        <p className="section-label fade-up-2">Account details</p>
+
         {[
-          {label:'Full name',  val: user?.name},
-          {label:'Phone',      val: user?.phone},
-          {label:'Account type', val: user?.role === 'admin' ? 'Office Administrator' : 'Citizen'},
-        ].map(row => (
-          <div key={row.label} className="card" style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'13px 16px'}}>
-            <span style={{color:'var(--muted)',fontSize:13}}>{row.label}</span>
-            <span style={{color:'var(--white)',fontSize:13,fontWeight:500}}>{row.val}</span>
+          { label: 'Full name', val: user?.name },
+          { label: 'Phone', val: user?.phone },
+          { label: 'Account type', val: user?.role === 'admin' ? 'Office Administrator' : 'Citizen' },
+        ].map((row, i) => (
+          <div key={row.label} className={`card fade-up-${i + 2}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '13px 16px' }}>
+            <span style={{ color: 'var(--gray3)', fontSize: 13 }}>{row.label}</span>
+            <span style={{ color: 'var(--white)', fontSize: 13, fontWeight: 500 }}>{row.val}</span>
           </div>
         ))}
 
-        <div className="divider"/>
+        <div className="divider fade-up-3" />
 
-        {/* Actions */}
-        <p className="section-label">Actions</p>
+        <p className="section-label fade-up-3">Settings</p>
 
-        <button
-          className="card"
+        <button className="card card-click fade-up-3"
           onClick={() => navigate('/forgot-password')}
-          style={{
-            width:'100%',textAlign:'left',cursor:'pointer',
-            display:'flex',justifyContent:'space-between',alignItems:'center',
-            padding:'13px 16px',border:'1px solid var(--border)',background:'var(--dark2)',
-          }}
-        >
-          <span style={{color:'var(--white)',fontSize:13}}>🔒 Change Password</span>
-          <span style={{color:'var(--muted)'}}>→</span>
+          style={{ width: '100%', textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 16px', border: '1px solid var(--border)' }}>
+          <span style={{ color: 'var(--white)', fontSize: 13 }}>Change Password</span>
+          <span style={{ color: 'var(--gray3)', fontSize: 16 }}>›</span>
         </button>
 
-        <div style={{marginTop:10}}>
-          <button className="btn-danger" onClick={handleLogout}>
-            Logout
-          </button>
+        <div style={{ marginTop: 12 }}>
+          <button className="btn-danger fade-up-4" onClick={handleLogout}>Logout</button>
         </div>
 
-        <p style={{color:'var(--muted)',fontSize:11,textAlign:'center',marginTop:20}}>
-          Smart Queue v1.0 · India Innovates 2026
+        <p style={{ color: 'var(--gray3)', fontSize: 11, textAlign: 'center', marginTop: 24 }}>
+          Smart Queue v2.0 · India Innovates 2026
         </p>
       </div>
     </div>

@@ -4,65 +4,99 @@ import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const { login } = useAuth();
-  const navigate  = useNavigate();
-  const [form, setForm]   = useState({ phone: '', password: '' });
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ phone: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState('citizen');
 
-  const handle = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handle = e => {
+    const { name, value } = e.target;
+    if (name === 'phone') {
+      const nums = value.replace(/\D/g, '').slice(0, 10);
+      setForm(f => ({ ...f, phone: nums }));
+    } else {
+      setForm(f => ({ ...f, [name]: value }));
+    }
+  };
 
-  const submit = async (e) => {
+  const submit = async e => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
+    setError(''); setLoading(true);
     try {
       const user = await login(form.phone, form.password);
       navigate(user.role === 'admin' ? '/admin' : '/');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
-    } finally {
-      setLoading(false);
-    }
+      setError(err.response?.data?.message || 'Invalid credentials');
+    } finally { setLoading(false); }
   };
 
   return (
-    <div className="app-shell">
-      <div className="screen" style={{ justifyContent: 'center' }}>
-        <div style={{ marginBottom: 32 }}>
-          <div style={{ width: 48, height: 48, background: '#02C39A', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-            <span style={{ color: '#0A2E36', fontSize: 24, fontWeight: 700 }}>SQ</span>
+    <div className="app-shell" style={{ background: 'var(--dark)' }}>
+      <div className="screen" style={{ justifyContent: 'center', display: 'flex', flexDirection: 'column', minHeight: '100vh', paddingBottom: 0 }}>
+
+        {/* Logo */}
+        <div className="fade-up" style={{ marginBottom: 40, textAlign: 'center' }}>
+          <div style={{
+            width: 64, height: 64, borderRadius: 20,
+            background: 'var(--white)', margin: '0 auto 20px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+              <path d="M5 8h20M5 15h14M5 22h9" stroke="#0a0a0a" strokeWidth="2.5" strokeLinecap="round"/>
+            </svg>
           </div>
-          <h1>Smart Queue</h1>
-          <p style={{ color: '#5A8A93', marginTop: 6, fontSize: 14 }}>Zero wait. Just your turn.</p>
+          <h1 style={{ fontSize: 32, marginBottom: 6 }}>Smart Queue</h1>
+          <p style={{ color: 'var(--gray3)', fontSize: 14 }}>Zero wait. Just your turn.</p>
         </div>
 
-        <form onSubmit={submit}>
+        {/* Toggle */}
+        <div className="fade-up-2" style={{ display: 'flex', background: 'var(--dark2)', borderRadius: 12, padding: 4, marginBottom: 24, border: '1px solid var(--border)' }}>
+          {['citizen', 'admin'].map(m => (
+            <button key={m} onClick={() => setMode(m)} style={{
+              flex: 1, padding: '9px 0', border: 'none', cursor: 'pointer',
+              borderRadius: 9, fontSize: 13, fontWeight: 600,
+              fontFamily: 'Inter,sans-serif', transition: 'all .2s',
+              background: mode === m ? 'var(--white)' : 'transparent',
+              color: mode === m ? 'var(--black)' : 'var(--gray3)',
+            }}>
+              {m === 'citizen' ? 'Citizen' : 'Office Admin'}
+            </button>
+          ))}
+        </div>
+
+        <form onSubmit={submit} className="fade-up-3">
           <div className="form-group">
             <label>Phone number</label>
-            <input name="phone" value={form.phone} onChange={handle} placeholder="+91 98765 43210" required />
+            <input
+              name="phone" value={form.phone} onChange={handle}
+              placeholder="10-digit number" required
+              inputMode="numeric" pattern="[0-9]*"
+              maxLength={10}
+            />
           </div>
           <div className="form-group">
             <label>Password</label>
             <input name="password" type="password" value={form.password} onChange={handle} placeholder="••••••••" required />
           </div>
           {error && <p className="msg-error">{error}</p>}
-          <div style={{ marginTop: 20 }}>
+          <div style={{ marginTop: 22 }}>
             <button className="btn-primary" type="submit" disabled={loading}>
-              {loading ? 'Logging in...' : 'Login →'}
+              {loading ? 'Signing in...' : `Login as ${mode === 'admin' ? 'Admin' : 'Citizen'} →`}
             </button>
           </div>
         </form>
-        <p style={{color:'var(--muted)',fontSize:13,textAlign:'center',marginTop:14}}>
-          <Link to="/forgot-password" style={{color:'var(--mint)',textDecoration:'none'}}>
-    Forgot password?
-          </Link>
-        </p>
-        
 
-        <p style={{ color: '#5A8A93', fontSize: 13, textAlign: 'center', marginTop: 20 }}>
-          New here?{' '}
-          <Link to="/register" style={{ color: '#02C39A', textDecoration: 'none' }}>Create account</Link>
+        <p style={{ color: 'var(--gray3)', fontSize: 12, textAlign: 'center', marginTop: 16 }}>
+          <Link to="/forgot-password" style={{ color: 'var(--gray4)', textDecoration: 'none' }}>Forgot password?</Link>
         </p>
+
+        {mode === 'citizen' && (
+          <p style={{ color: 'var(--gray3)', fontSize: 13, textAlign: 'center', marginTop: 12 }}>
+            New here?{' '}
+            <Link to="/register" style={{ color: 'var(--white)', textDecoration: 'none', fontWeight: 600 }}>Create account</Link>
+          </p>
+        )}
       </div>
     </div>
   );

@@ -16,8 +16,11 @@ const io = new Server(server, {
 });
 
 // Middleware
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:3000' }));
-app.use(express.json());
+app.use(cors({ origin: '*' }));
+```
+
+//Save karo → phir GitHub pe push karo:
+```
 
 // Make io accessible in routes
 app.set('io', io);

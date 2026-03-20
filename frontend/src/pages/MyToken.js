@@ -17,18 +17,13 @@ export default function MyToken() {
     finally { setLoading(false); }
   }, [tokenId, navigate]);
 
-  useEffect(() => {
-    fetchToken();
-  }, [fetchToken]);
+  useEffect(() => { fetchToken(); }, [fetchToken]);
 
-  // Real-time socket updates
   useEffect(() => {
     if (!token?.office?._id) return;
     const socket = getSocket();
     socket.emit('join_office', token.office._id);
-    socket.on('queue_update', (data) => {
-      if (data.type === 'next_called') fetchToken();
-    });
+    socket.on('queue_update', data => { if (data.type === 'next_called') fetchToken(); });
     return () => socket.off('queue_update');
   }, [token?.office?._id, fetchToken]);
 
@@ -39,131 +34,115 @@ export default function MyToken() {
       await api.patch(`/tokens/${tokenId}/cancel`);
       navigate('/');
     } catch (err) {
-      alert(err.response?.data?.message || 'Could not cancel');
+      alert(err.response?.data?.message || 'Cannot cancel');
       setCancelling(false);
     }
   };
 
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) return <div className="loading"><div className="loading-spinner" /></div>;
   if (!token)  return <div className="loading">Token not found</div>;
-
-  const pct = token.office
-    ? Math.min(100, Math.round(((token.office.currentToken) / (token.tokenNumber)) * 100))
-    : 0;
 
   const isMyTurn = token.status === 'serving';
   const isDone   = ['done', 'cancelled', 'no_show'].includes(token.status);
+  const pct      = token.office ? Math.min(100, Math.round((token.office.currentToken / token.tokenNumber) * 100)) : 0;
+  const R = 60, C = 2 * Math.PI * R;
 
   return (
     <div className="app-shell">
       <div className="screen">
         <button className="back-btn" onClick={() => navigate('/')}>← Home</button>
 
-        {/* Big token number */}
-        <div style={{ textAlign: 'center', marginBottom: 8 }}>
-          <p style={{ color: '#5A8A93', fontSize: 10, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>
-            Your token
-          </p>
+        {/* Your turn banner */}
+        {isMyTurn && (
+          <div className="scale-in" style={{
+            background: 'var(--white)', borderRadius: 16, padding: '16px 20px',
+            textAlign: 'center', marginBottom: 16,
+          }}>
+            <p style={{ color: 'var(--black)', fontSize: 18, fontWeight: 700, fontFamily: 'Playfair Display,serif' }}>It's your turn!</p>
+            <p style={{ color: 'rgba(0,0,0,0.5)', fontSize: 13, marginTop: 4 }}>Please proceed to the counter now</p>
+          </div>
+        )}
 
-          {/* Animated ring */}
-          <div style={{ position: 'relative', width: 150, height: 150, margin: '0 auto 16px' }}>
-            <svg width="150" height="150" viewBox="0 0 150 150">
-              <circle cx="75" cy="75" r="65" fill="none" stroke="#0D3D4A" strokeWidth="6" />
-              <circle
-                cx="75" cy="75" r="65"
-                fill="none"
-                stroke={isMyTurn ? '#F0544F' : '#02C39A'}
-                strokeWidth="6"
-                strokeDasharray={`${2 * Math.PI * 65}`}
-                strokeDashoffset={`${2 * Math.PI * 65 * (1 - pct / 100)}`}
-                strokeLinecap="round"
-                transform="rotate(-90 75 75)"
-                style={{ transition: 'stroke-dashoffset 1s ease' }}
+        {/* Ring */}
+        <div className="fade-up" style={{ textAlign: 'center', marginBottom: 10 }}>
+          <p style={{ color: 'var(--gray3)', fontSize: 10, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 16 }}>Your token</p>
+          <div style={{ position: 'relative', width: 160, height: 160, margin: '0 auto 16px' }}>
+            <svg width="160" height="160" viewBox="0 0 160 160" style={{ transform: 'rotate(-90deg)' }}>
+              <circle cx="80" cy="80" r={R} fill="none" stroke="var(--dark2)" strokeWidth="8" />
+              <circle cx="80" cy="80" r={R} fill="none"
+                stroke={isMyTurn ? 'var(--white)' : 'rgba(255,255,255,0.6)'}
+                strokeWidth="8" strokeLinecap="round"
+                strokeDasharray={C}
+                strokeDashoffset={C * (1 - pct / 100)}
+                style={{ transition: 'stroke-dashoffset 1.2s ease' }}
               />
             </svg>
             <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <p style={{ color: '#5A8A93', fontSize: 9, letterSpacing: 1, textTransform: 'uppercase' }}>Token no.</p>
-              <p style={{ color: '#fff', fontSize: 40, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }}>
+              <p style={{ color: 'var(--gray3)', fontSize: 9, letterSpacing: 1, textTransform: 'uppercase' }}>Token</p>
+              <p style={{ color: 'var(--white)', fontSize: 46, fontWeight: 700, fontFamily: 'Playfair Display,serif', lineHeight: 1 }}>
                 {String(token.tokenNumber).padStart(3, '0')}
               </p>
-              <span className={`badge badge-${token.status}`} style={{ marginTop: 4 }}>
-                {token.status === 'serving' ? 'YOUR TURN!' : token.status}
+              <span className={`badge badge-${token.status}`} style={{ marginTop: 5 }}>
+                {token.status === 'serving' ? 'YOUR TURN' : token.status}
               </span>
             </div>
           </div>
-
-          <p style={{ color: '#5A8A93', fontSize: 12 }}>{token.office?.name}</p>
-          <p style={{ color: '#5A8A93', fontSize: 11, marginTop: 2 }}>{token.service}</p>
+          <p style={{ color: 'var(--gray3)', fontSize: 12 }}>{token.office?.name}</p>
+          <p style={{ color: 'var(--gray3)', fontSize: 11, marginTop: 2 }}>{token.service}</p>
         </div>
 
-        {/* Stats row */}
+        {/* Stats */}
         {!isDone && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 16 }}>
-            <div className="card" style={{ textAlign: 'center', padding: 10 }}>
-              <p style={{ color: '#fff', fontSize: 18, fontWeight: 700 }}>{token.peopleAhead}</p>
-              <p style={{ color: '#5A8A93', fontSize: 9, marginTop: 2 }}>Ahead of you</p>
-            </div>
-            <div className="card" style={{ textAlign: 'center', padding: 10 }}>
-              <p style={{ color: '#02C39A', fontSize: 18, fontWeight: 700 }}>
-                {String(token.office?.currentToken || 0).padStart(3, '0')}
-              </p>
-              <p style={{ color: '#5A8A93', fontSize: 9, marginTop: 2 }}>Now serving</p>
-            </div>
-            <div className="card" style={{ textAlign: 'center', padding: 10 }}>
-              <p style={{ color: '#fff', fontSize: 18, fontWeight: 700 }}>~{token.estimatedWait}</p>
-              <p style={{ color: '#5A8A93', fontSize: 9, marginTop: 2 }}>min wait</p>
-            </div>
+          <div className="fade-up-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 14 }}>
+            {[
+              { l: 'Ahead',   v: token.peopleAhead, col: 'var(--white)' },
+              { l: 'Serving', v: `#${String(token.office?.currentToken || 0).padStart(3, '0')}`, col: 'var(--green)' },
+              { l: 'Wait',    v: `~${token.estimatedWait}m`, col: 'var(--white)' },
+            ].map(s => (
+              <div key={s.l} className="card" style={{ textAlign: 'center', padding: '10px 6px' }}>
+                <p style={{ color: s.col, fontSize: 16, fontWeight: 700, fontFamily: 'Playfair Display,serif' }}>{s.v}</p>
+                <p style={{ color: 'var(--gray3)', fontSize: 9, marginTop: 3, textTransform: 'uppercase', letterSpacing: .6 }}>{s.l}</p>
+              </div>
+            ))}
           </div>
         )}
 
         {/* Progress bar */}
         {!isDone && (
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#5A8A93', fontSize: 11, marginBottom: 6 }}>
-              <span>Queue progress</span>
-              <span>{pct}%</span>
+          <div className="fade-up-3" style={{ marginBottom: 14 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: 'var(--gray3)', marginBottom: 6 }}>
+              <span>Queue progress</span><span>{pct}%</span>
             </div>
-            <div style={{ background: '#0D3D4A', borderRadius: 4, height: 8 }}>
-              <div style={{ background: '#02C39A', height: 8, borderRadius: 4, width: `${pct}%`, transition: 'width 1s ease' }} />
+            <div style={{ background: 'var(--dark2)', borderRadius: 6, height: 4 }}>
+              <div style={{ background: 'var(--white)', height: 4, borderRadius: 6, width: `${pct}%`, transition: 'width 1s ease' }} />
             </div>
           </div>
         )}
 
-        {/* Your turn banner */}
-        {isMyTurn && (
-          <div style={{ background: '#F0544F', borderRadius: 12, padding: 16, textAlign: 'center', marginBottom: 16 }}>
-            <p style={{ color: '#fff', fontSize: 16, fontWeight: 700 }}>It's your turn!</p>
-            <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 12, marginTop: 4 }}>Please proceed to the counter now</p>
-          </div>
-        )}
-
-        {/* SMS notification note */}
+        {/* SMS notice */}
         {!isDone && !isMyTurn && (
-          <div className="card" style={{ display: 'flex', gap: 10, alignItems: 'flex-start', marginBottom: 16 }}>
-            <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#02C39A', flexShrink: 0, marginTop: 4 }} className="pulse" />
+          <div className="card fade-up-3" style={{ display: 'flex', gap: 10, alignItems: 'flex-start', marginBottom: 14 }}>
+            <span className="dot-live" style={{ marginTop: 4, flexShrink: 0 }} />
             <div>
-              <p style={{ color: '#fff', fontSize: 12 }}>You'll get an SMS when 3 people remain ahead of you.</p>
-              <p style={{ color: '#5A8A93', fontSize: 11, marginTop: 4 }}>SMS sent to your registered number</p>
+              <p style={{ color: 'var(--white)', fontSize: 12 }}>SMS alert when 3 people are ahead of you</p>
+              <p style={{ color: 'var(--gray3)', fontSize: 11, marginTop: 3 }}>This page updates automatically</p>
             </div>
           </div>
         )}
 
-        {/* Done state */}
+        {/* Done */}
         {isDone && (
-          <div className="card" style={{ textAlign: 'center', padding: 24, marginBottom: 16 }}>
-            <p style={{ color: '#5A8A93', fontSize: 14 }}>
-              {token.status === 'done' ? 'Service completed. Thank you!' :
-               token.status === 'cancelled' ? 'Token was cancelled.' : 'Marked as no-show.'}
+          <div className="card scale-in" style={{ textAlign: 'center', padding: 24, marginBottom: 16 }}>
+            <p style={{ color: 'var(--gray3)', fontSize: 14 }}>
+              {token.status === 'done' ? '✓ Service completed. Thank you!' :
+               token.status === 'cancelled' ? 'Token cancelled.' : 'Marked as no-show.'}
             </p>
-            <button className="btn-primary" style={{ marginTop: 14 }} onClick={() => navigate('/')}>
-              Back to home
-            </button>
+            <button className="btn-primary" style={{ marginTop: 16 }} onClick={() => navigate('/')}>Back to home</button>
           </div>
         )}
 
-        {/* Cancel button */}
         {token.status === 'waiting' && (
-          <button className="btn-danger" onClick={cancel} disabled={cancelling}>
+          <button className="btn-danger fade-up-4" onClick={cancel} disabled={cancelling}>
             {cancelling ? 'Cancelling...' : 'Cancel token'}
           </button>
         )}
