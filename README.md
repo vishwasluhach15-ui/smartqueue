@@ -1,73 +1,121 @@
-# Smart Queue — Zero Wait 🚀
+# 🚀 Smart Queue — Zero Wait
 ### India Innovates 2026 | Municipal Corporation of Delhi | Urban Solutions
 
-**Team:** Vishwas · Kamal · Kunal | UIET, MDU 
+> *Eliminating multi-hour queues at government offices with a smart virtual token & real-time alert system.*
+
+**Team:** Kamal · Vishwas · Mukul
+**Institution:** UIET, Maharshi Dayanand University (MDU), Rohtak, Haryana
 
 ---
 
-## What is this?
-A full-stack web app that eliminates long queues at government offices.
-Citizens get a virtual token + real-time SMS/app alerts. Staff get a live admin dashboard.
+## 🌐 Live Links
+
+| Resource | URL |
+|----------|-----|
+| 🌍 Live App | [frontend-three-green-27.vercel.app](https://frontend-three-green-27.vercel.app) |
+| ⚙️ Backend API | [smartqueue-backend-q2um.onrender.com](https://smartqueue-backend-q2um.onrender.com) |
+| 📺 Display Board | [frontend-three-green-27.vercel.app/display](https://frontend-three-green-27.vercel.app/display) |
+| 🔍 API Health | [/api/health](https://smartqueue-backend-q2um.onrender.com/api/health) |
 
 ---
 
-## Tech Stack
-| Layer     | Technology                        |
-|-----------|-----------------------------------|
-| Frontend  | React.js + React Router           |
-| Backend   | Node.js + Express                 |
-| Database  | MongoDB (Mongoose)                |
-| Realtime  | Socket.io (live queue updates)    |
-| SMS       | Twilio (optional)                 |
-| Auth      | JWT + bcrypt                      |
+## 📱 Screenshots
+
+| Home Screen | Token Tracker | Admin Dashboard | Display Board |
+|-------------|--------------|-----------------|---------------|
+| Offices with live queue | Real-time ring progress | Analytics + queue mgmt | Office monitor screen |
 
 ---
 
-## Project Structure
+## ✨ Features
+
+### For Citizens
+- 📱 **Virtual Token** — Book slot via app or SMS (no internet needed for SMS)
+- 🔔 **Live Notifications** — SMS alert when 3 people remain ahead
+- 📊 **Real-time Tracker** — Live queue ring with position & estimated wait
+- 🎙️ **Voice Alert** — Auto voice announcement when it's your turn
+- ❌ **Cancel Token** — Cancel anytime before being served
+- 🔐 **Password Reset** — OTP-based secure password recovery
+
+### For Offices (Admin)
+- 📺 **Display Board** — Full-screen board for office monitors with voice announcements
+- 📊 **Live Dashboard** — Real-time stats, charts, queue management
+- ⏭️ **Call Next Token** — One-click with automatic voice + SMS to citizen
+- 🚫 **No-Show Marking** — Mark absent citizens
+- 📈 **Analytics** — Hourly charts, performance metrics
+- 🔄 **Office Toggle** — Open/close office instantly
+
+### Technical Highlights
+- ⚡ **Real-time Socket.io** — Zero-refresh live updates
+- 📱 **SMS Fallback** — Works without internet via Twilio
+- 🔒 **Privacy-First** — No Aadhaar needed, phone only
+- 🌍 **Multi-city** — Rohtak, Delhi NCR, Gurugram offices
+- 🌐 **Multi-language Ready** — Hindi + English support
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React.js + React Router |
+| Backend | Node.js + Express.js |
+| Database | MongoDB + Mongoose (Atlas Cloud) |
+| Real-time | Socket.io |
+| SMS | Twilio API |
+| Auth | JWT + bcrypt |
+| Fonts | Space Grotesk + DM Sans |
+| Deployment | Vercel (frontend) + Render (backend) |
+
+---
+
+## 🏗️ Project Structure
+
 ```
 smartqueue/
 ├── backend/
-│   ├── server.js          # Express + Socket.io entry point
+│   ├── server.js              # Express + Socket.io server
 │   ├── models/
-│   │   ├── User.js        # Citizen / Admin user model
-│   │   ├── Office.js      # Government office model
-│   │   └── Token.js       # Queue token model
+│   │   ├── User.js            # Citizen / Admin model
+│   │   ├── Office.js          # Government office model
+│   │   └── Token.js           # Queue token model
 │   ├── routes/
-│   │   ├── auth.js        # Register / Login
-│   │   ├── offices.js     # List & manage offices
-│   │   ├── tokens.js      # Book / view / cancel tokens
-│   │   └── admin.js       # Admin dashboard & call-next
+│   │   ├── auth.js            # Register, Login, OTP, Reset
+│   │   ├── offices.js         # Offices CRUD + seed
+│   │   ├── tokens.js          # Book, view, cancel tokens
+│   │   └── admin.js           # Dashboard, call-next, no-show
 │   ├── middleware/
-│   │   └── auth.js        # JWT protect + adminOnly
-│   ├── config/
-│   │   └── sms.js         # Twilio SMS helper
-│   └── .env.example       # Environment variables template
+│   │   └── auth.js            # JWT + adminOnly guards
+│   └── config/
+│       └── sms.js             # Twilio SMS helper
 │
 └── frontend/
-    ├── src/
-    │   ├── App.js          # Routes & auth guards
-    │   ├── api.js          # Axios instance + Socket.io
-    │   ├── index.css       # Global dark teal theme
-    │   ├── context/
-    │   │   └── AuthContext.js
-    │   └── pages/
-    │       ├── Login.js
-    │       ├── Register.js
-    │       ├── Home.js      # Offices list + active token
-    │       ├── BookToken.js # Service select & confirm
-    │       ├── MyToken.js   # Live token tracker (Socket.io)
-    │       └── AdminDash.js # Admin panel (Socket.io)
-    └── public/
-        └── index.html
+    └── src/
+        ├── App.js             # Routes + auth guards
+        ├── api.js             # Axios + Socket.io client
+        ├── index.css          # Global dark theme
+        ├── admin.css          # Admin portal styles
+        ├── context/
+        │   └── AuthContext.js
+        └── pages/
+            ├── Login.js
+            ├── Register.js
+            ├── Home.js        # Offices + active token
+            ├── BookToken.js   # Service select + confirm
+            ├── MyToken.js     # Live tracker + voice
+            ├── AdminDash.js   # Admin portal
+            ├── DisplayBoard.js # Office monitor screen
+            ├── ForgotPassword.js
+            └── Profile.js
 ```
 
 ---
 
-## Setup & Run
+## 🚀 Local Setup
 
 ### Prerequisites
 - Node.js v18+
-- MongoDB (local or MongoDB Atlas free tier)
+- MongoDB (local or Atlas)
 
 ### 1. Clone & Install
 
@@ -76,139 +124,157 @@ smartqueue/
 cd backend
 npm install
 cp .env.example .env
-# Edit .env — set your MONGO_URI and JWT_SECRET
+# Edit .env with your MONGO_URI and JWT_SECRET
 
 # Frontend
 cd ../frontend
 npm install
 ```
 
-### 2. Start MongoDB
-```bash
-# Local MongoDB
-mongod
+### 2. Environment Variables
 
-# OR use MongoDB Atlas (free) — paste connection string in .env
-```
+```env
+MONGO_URI=mongodb://localhost:27017/smartqueue
+JWT_SECRET=your_secret_key
+PORT=5000
+CLIENT_URL=http://localhost:3000
 
-### 3. Run Backend
-```bash
-cd backend
-npm run dev       # uses nodemon for auto-restart
-# Server starts on http://localhost:5000
-```
-
-### 4. Seed Demo Data
-```bash
-# Once server is running, seed 3 demo offices:
-curl -X POST http://localhost:5000/api/offices/seed/demo
-```
-
-### 5. Run Frontend
-```bash
-cd frontend
-npm start
-# Opens http://localhost:3000
-```
-
----
-
-## API Endpoints
-
-### Auth
-| Method | Endpoint                  | Description         |
-|--------|---------------------------|---------------------|
-| POST   | /api/auth/register        | Citizen register    |
-| POST   | /api/auth/login           | Login               |
-| POST   | /api/auth/register-admin  | Admin register      |
-
-### Offices
-| Method | Endpoint                  | Description         |
-|--------|---------------------------|---------------------|
-| GET    | /api/offices              | List all offices    |
-| GET    | /api/offices/:id          | Single office       |
-| POST   | /api/offices/seed/demo    | Seed demo data      |
-
-### Tokens
-| Method | Endpoint                  | Description         |
-|--------|---------------------------|---------------------|
-| POST   | /api/tokens/book          | Book a token        |
-| GET    | /api/tokens/my            | My tokens           |
-| GET    | /api/tokens/:id           | Token status        |
-| PATCH  | /api/tokens/:id/cancel    | Cancel token        |
-
-### Admin (requires admin JWT)
-| Method | Endpoint                    | Description         |
-|--------|-----------------------------|---------------------|
-| GET    | /api/admin/dashboard        | Live dashboard      |
-| POST   | /api/admin/call-next        | Call next token     |
-| PATCH  | /api/admin/token/:id/no-show| Mark no-show        |
-| PATCH  | /api/admin/office/toggle    | Open/close office   |
-
----
-
-## Creating an Admin Account
-
-After seeding offices, get an office ID:
-```bash
-curl http://localhost:5000/api/offices
-# Copy the _id of an office
-```
-
-Register an admin:
-```bash
-curl -X POST http://localhost:5000/api/auth/register-admin \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Admin","phone":"+919876500001","password":"admin123","officeId":"<PASTE_OFFICE_ID>"}'
-```
-
-Login with those credentials → you'll be redirected to `/admin`.
-
----
-
-## Real-time Features (Socket.io)
-
-| Event            | Direction       | Payload                          |
-|------------------|-----------------|----------------------------------|
-| `join_office`    | Client → Server | officeId                         |
-| `join_admin`     | Client → Server | officeId                         |
-| `queue_update`   | Server → Client | type, currentToken, queueLength  |
-| `dashboard_update`| Server → Admin | currentToken, serving token      |
-
-When admin calls next token:
-1. Server marks old token as `done`
-2. New token set to `serving`
-3. SMS sent to that person via Twilio
-4. If 3rd person in queue — heads-up SMS sent to them
-5. All connected clients get `queue_update` → UI refreshes instantly
-
----
-
-## SMS Setup (Optional — Twilio)
-
-1. Create free account at [twilio.com](https://twilio.com)
-2. Get Account SID, Auth Token, Phone Number
-3. Add to `.env`:
-```
+# Optional — Twilio SMS
 TWILIO_ACCOUNT_SID=ACxxxxxxxxx
 TWILIO_AUTH_TOKEN=your_token
 TWILIO_PHONE_NUMBER=+1xxxxxxxxxx
 ```
 
-Without Twilio, SMS messages are just logged to the console (demo mode).
+### 3. Run
+
+```bash
+# Terminal 1 — Backend
+cd backend && npm run dev
+# → Server running on port 5000
+
+# Terminal 2 — Frontend
+cd frontend && npm start
+# → Opens http://localhost:3000
+```
+
+### 4. Seed Demo Data
+
+```bash
+# PowerShell
+Invoke-WebRequest -Uri "http://localhost:5000/api/offices/seed/demo" -Method POST -UseBasicParsing
+```
 
 ---
 
-## Demo Flow for Judges
+## 🔑 API Reference
 
-1. Open app → Register as citizen
-2. See nearby offices → click **Book** on any office
-3. Select service → **Confirm & Get Token**
-4. Watch live token tracker (MyToken page)
-5. Open second tab → Login as admin → Admin Dashboard
-6. Click **Call Next Token** — watch citizen's screen update in real-time!
+### Auth
+```
+POST /api/auth/register          # Citizen register
+POST /api/auth/login             # Login
+POST /api/auth/register-admin    # Admin register (requires secret key)
+POST /api/auth/send-otp          # Send OTP for password reset
+POST /api/auth/reset-password    # Reset password with OTP
+```
+
+### Offices
+```
+GET  /api/offices                # List all offices
+GET  /api/offices/:id            # Single office details
+POST /api/offices/seed/demo      # Seed demo data (Rohtak + Delhi NCR)
+```
+
+### Tokens
+```
+POST  /api/tokens/book           # Book a token
+GET   /api/tokens/my             # My tokens
+GET   /api/tokens/:id            # Token status
+PATCH /api/tokens/:id/cancel     # Cancel token
+```
+
+### Admin (JWT required)
+```
+GET   /api/admin/dashboard       # Live dashboard + stats
+POST  /api/admin/call-next       # Call next token (SMS + voice)
+PATCH /api/admin/token/:id/no-show  # Mark no-show
+PATCH /api/admin/office/toggle   # Open/close office
+```
 
 ---
 
-## Built with ❤️ by Team Smart Queue
-*UIET MDU  · India Innovates 2026 · Municipal Corporation of Delhi*
+## 🎮 Demo Credentials
+
+```
+Admin Login:
+  Phone    → +919876500001
+  Password → admin123
+
+Admin Registration Secret Key → SMARTQUEUE-ADMIN-2026
+```
+
+---
+
+## 🎯 Demo Flow for Judges
+
+1. **Open** → [frontend-three-green-27.vercel.app](https://frontend-three-green-27.vercel.app)
+2. **Register** as citizen → See 6 offices (Rohtak + Delhi + Gurugram)
+3. **Book** a token at any office → Get token tracker screen
+4. **Open new tab** → Login as Admin (`+919876500001` / `admin123`)
+5. **Click "Call Next Token"** on admin dashboard
+6. **Watch Tab 1** → Queue updates LIVE via Socket.io ⚡
+7. **Open** `/display` → Full-screen office board with voice announcements 📺
+
+---
+
+## 🏆 Why Smart Queue Wins
+
+| Feature | Manual Token | Generic Apps | **Smart Queue** |
+|---------|-------------|--------------|-----------------|
+| Virtual Token | ❌ | ✅ | ✅ |
+| SMS Fallback | ❌ | ❌ | ✅ |
+| Real-time Updates | ❌ | ❌ | ✅ |
+| Voice Announcements | ❌ | ❌ | ✅ |
+| Display Board | ❌ | ❌ | ✅ |
+| Admin Dashboard | ❌ | ✅ | ✅ |
+| No Hardware Needed | ✅ | ❌ | ✅ |
+| Free for Citizens | ✅ | ❌ | ✅ |
+
+**Smart Queue is the ONLY solution built specifically for Indian government offices — offline-ready, multilingual, zero hardware.**
+
+---
+
+## 🗺️ Roadmap
+
+| Phase | Timeline | Goal |
+|-------|----------|------|
+| Phase 1 | Now | Pilot: 5 MCD offices in Rohtak |
+| Phase 2 | 3 Months | Scale: 50+ offices Delhi NCR |
+| Phase 3 | 1 Year | National rollout + State API |
+
+---
+
+## 💰 Business Model
+
+- **Govt SaaS License** — ₹50K–₹2L / office / year (PRIMARY)
+- **Setup & Integration** — ₹1L–₹5L per department (ONE-TIME)
+- **CSR / Govt Grants** — Smart City Mission, Digital India (UP TO ₹50L)
+- **Analytics Premium** — ₹25K–₹1L / department / year (FUTURE)
+
+*Free for citizens. Sustainable for the government.*
+
+---
+
+## 👥 Team
+
+| Name | Role | Branch | Year |
+|------|------|--------|------|
+| Kamal | Frontend Dev | CSE | 1st Year |
+| Vishwas| Backend Dev | BCA | 1st Year |
+| Mukul | Backend Dev | CSE | 1st Year |
+
+**UIET — University Institute of Engineering & Technology**
+**Maharshi Dayanand University (MDU), Rohtak, Haryana**
+
+---
+
+*Built with ❤️ for India Innovates 2026 · Municipal Corporation of Delhi*
