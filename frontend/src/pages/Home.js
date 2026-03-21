@@ -28,7 +28,7 @@ export default function Home(){
       <div className="scr">
 
         {/* Header */}
-        <div className="a1" style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'22px 0 6px'}}>
+        <div className="a1" style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'22px 0 8px'}}>
           <div>
             <p style={{color:'var(--m)',fontSize:10,letterSpacing:2,textTransform:'uppercase',marginBottom:4,fontWeight:700}}>Smart Queue</p>
             <h2>Hey, {user?.name?.split(' ')[0]} 👋</h2>
@@ -88,25 +88,33 @@ export default function Home(){
 
         {filtered.map((o,i)=>{
           const inQ=Math.max(0,o.lastToken-o.currentToken),wait=inQ*5;
-          const wc=wait<15?'var(--gr)':wait<40?'var(--am)':'var(--re)';
-          const bgs={Rohtak:'linear-gradient(135deg,rgba(99,102,241,.08),rgba(244,63,94,.05))',Delhi:'linear-gradient(135deg,rgba(6,182,212,.08),rgba(99,102,241,.05))',Gurugram:'linear-gradient(135deg,rgba(245,158,11,.08),rgba(239,68,68,.05))'};
+          const wc=wait<15?'#10b981':wait<40?'#f59e0b':'#ef4444';
+          const bgs={Rohtak:'rgba(99,102,241,.06)',Delhi:'rgba(6,182,212,.06)',Gurugram:'rgba(245,158,11,.05)'};
           return(
-            <div key={o._id} className="card card-i a3" style={{animationDelay:`${i*.05}s`,background:bgs[o.city]||'var(--s1)'}} onClick={()=>navigate(`/book/${o._id}`)}>
-              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:6}}>
-                    <span style={{background:'rgba(99,102,241,.15)',color:'var(--p2)',fontSize:9,fontWeight:800,padding:'3px 8px',borderRadius:6,letterSpacing:.8,textTransform:'uppercase'}}>{o.city}</span>
+            <div key={o._id} className="card card-i a3" style={{animationDelay:`${i*.05}s`,background:bgs[o.city]||'var(--s1)',border:'1px solid rgba(255,255,255,.08)'}} onClick={()=>navigate(`/book/${o._id}`)}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <div style={{flex:1,minWidth:0,paddingRight:12}}>
+                  <div style={{marginBottom:7}}>
+                    <span style={{background:'rgba(99,102,241,.18)',color:'#a5b4fc',fontSize:9,fontWeight:800,padding:'3px 9px',borderRadius:6,letterSpacing:.8,textTransform:'uppercase'}}>{o.city}</span>
                   </div>
-                  <h3 style={{fontSize:13,marginBottom:5,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',fontWeight:600}}>{o.name}</h3>
-                  <p style={{color:'var(--m)',fontSize:11,marginBottom:8}}>{o.address}</p>
-                  <div style={{display:'flex',alignItems:'center',gap:6}}>
-                    <span className="dot"/><span style={{color:'var(--gr)',fontSize:10,fontWeight:700}}>Serving #{o.currentToken}</span>
-                    <span style={{color:'var(--m)',fontSize:10}}>· {inQ} waiting</span>
+                  <h3 style={{fontSize:14,marginBottom:5,fontWeight:700,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{o.name}</h3>
+                  <p style={{color:'var(--m)',fontSize:11,marginBottom:10}}>{o.address}</p>
+                  <div style={{display:'flex',alignItems:'center',gap:7}}>
+                    <span style={{width:6,height:6,borderRadius:'50%',background:'#10b981',display:'inline-block',flexShrink:0}}/>
+                    <span style={{color:'#10b981',fontSize:11,fontWeight:700}}>Serving #{o.currentToken}</span>
+                    <span style={{color:'var(--m)',fontSize:11}}>· {inQ} waiting</span>
                   </div>
                 </div>
-                <div style={{textAlign:'right',flexShrink:0,marginLeft:12}}>
-                  <p style={{color:wc,fontSize:26,fontWeight:800,fontFamily:'Space Grotesk,sans-serif',letterSpacing:-1}}>{wait}<span style={{fontSize:11,color:'var(--m)',fontWeight:400}}> min</span></p>
-                  <div style={{marginTop:8,background:'var(--g1)',borderRadius:10,padding:'6px 14px',fontSize:11,color:'#fff',fontWeight:700,boxShadow:'0 4px 12px rgba(99,102,241,.3)'}}>Book →</div>
+
+                {/* Wait time — bold colored number */}
+                <div style={{textAlign:'right',flexShrink:0}}>
+                  <p style={{color:wc,fontSize:32,fontWeight:800,fontFamily:'Space Grotesk,sans-serif',letterSpacing:-1,lineHeight:1}}>
+                    {wait}
+                    <span style={{fontSize:12,color:'var(--m)',fontWeight:500,fontFamily:'DM Sans,sans-serif'}}> min</span>
+                  </p>
+                  <div style={{marginTop:10,background:'linear-gradient(135deg,#6366f1,#f43f5e)',borderRadius:10,padding:'7px 16px',fontSize:12,color:'#fff',fontWeight:700,textAlign:'center',boxShadow:'0 4px 12px rgba(99,102,241,.35)',cursor:'pointer'}}>
+                    Book →
+                  </div>
                 </div>
               </div>
             </div>
@@ -115,19 +123,19 @@ export default function Home(){
         <div style={{height:10}}/>
       </div>
 
-      <nav className="nav">
-        <Link to="/" className="ni on">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 8.5L9 2l7 6.5V16a1 1 0 01-1 1H3a1 1 0 01-1-1V8.5z" stroke="white" strokeWidth="1.8" fill="none"/><path d="M6 17v-4h6v4" stroke="white" strokeWidth="1.8"/></svg>
-          <span className="nl">Home</span>
-        </Link>
-        <Link to={active?`/token/${active._id}`:'/'}  className="ni">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="1" width="12" height="16" rx="2" stroke="white" strokeWidth="1.8"/><path d="M6 6h6M6 9.5h4" stroke="white" strokeWidth="1.5" strokeLinecap="round"/></svg>
-          <span className="nl">Token</span>
-        </Link>
-        <Link to="/profile" className="ni">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="white" strokeWidth="1.8"/><path d="M2 16c0-3.314 2.686-5 7-5s7 1.686 7 5" stroke="white" strokeWidth="1.8" strokeLinecap="round"/></svg>
-          <span className="nl">Profile</span>
-        </Link>
+      {/* Bottom nav — clean icons with active indicator */}
+      <nav style={{position:'fixed',bottom:0,left:'50%',transform:'translateX(-50%)',width:'100%',maxWidth:430,background:'rgba(7,8,10,.97)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',display:'flex',borderTop:'1px solid rgba(255,255,255,.07)',zIndex:100}}>
+        {[
+          {to:'/',label:'Home',active:true,icon:<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2 9L10 2l8 7v9a1 1 0 01-1 1H3a1 1 0 01-1-1V9z" stroke="white" strokeWidth="1.8" fill="none"/><path d="M7 22v-6h6v6" stroke="white" strokeWidth="1.8"/></svg>},
+          {to:active?`/token/${active._id}`:'/token-empty',label:'My Token',active:false,icon:<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="1" width="14" height="18" rx="2.5" stroke="white" strokeWidth="1.8"/><path d="M7 7h6M7 11h4" stroke="white" strokeWidth="1.5" strokeLinecap="round"/></svg>},
+          {to:'/profile',label:'Profile',active:false,icon:<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="3.5" stroke="white" strokeWidth="1.8"/><path d="M3 18c0-3.866 3.134-6 7-6s7 2.134 7 6" stroke="white" strokeWidth="1.8" strokeLinecap="round"/></svg>},
+        ].map((item,idx)=>(
+          <Link key={idx} to={item.to} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',padding:'10px 4px 12px',textDecoration:'none',opacity:item.active?1:.35,transition:'opacity .2s',gap:4,position:'relative'}}>
+            {item.active&&<div style={{position:'absolute',top:0,left:'50%',transform:'translateX(-50%)',width:24,height:3,background:'linear-gradient(90deg,#6366f1,#f43f5e)',borderRadius:'0 0 4px 4px'}}/>}
+            {item.icon}
+            <span style={{color:item.active?'#a5b4fc':'#fff',fontSize:9,fontWeight:700,letterSpacing:.8,textTransform:'uppercase'}}>{item.label}</span>
+          </Link>
+        ))}
       </nav>
     </div>
   );
