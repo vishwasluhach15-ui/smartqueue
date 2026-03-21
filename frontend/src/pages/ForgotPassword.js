@@ -21,7 +21,7 @@ export default function ForgotPassword() {
 
   const reset = async e => {
     e.preventDefault();
-    if (otp.length !== 6) { setError('Enter complete 6-digit OTP'); return; }
+    if (otp.length!==6) { setError('Enter complete 6-digit OTP'); return; }
     setError(''); setLoading(true);
     try {
       await api.post('/auth/reset-password', { phone, otp, newPassword: newPass });
@@ -37,54 +37,43 @@ export default function ForgotPassword() {
         <button className="back-btn" onClick={() => navigate('/login')}>← Back</button>
         <div className="a1" style={{ marginBottom:28 }}>
           <h1>Reset Password</h1>
-          <p style={{ color:'var(--muted)',marginTop:6,fontSize:14 }}>
-            {step===1 ? 'Enter your phone to receive OTP' : `OTP sent to ${phone}`}
-          </p>
+          <p style={{ color:'var(--muted)',marginTop:6,fontSize:14 }}>{step===1?'Enter your phone to receive OTP':`OTP sent to ${phone}`}</p>
         </div>
 
         <div className="a2" style={{ display:'flex',gap:8,marginBottom:32 }}>
-          {[1,2].map(s => (
-            <div key={s} style={{ flex:1,height:2,borderRadius:2,background:step>=s?'var(--white)':'var(--bg3)',transition:'background .3s' }}/>
+          {[1,2].map(s=>(
+            <div key={s} style={{ flex:1,height:3,borderRadius:3,background:step>=s?'linear-gradient(90deg,#8b5cf6,#ec4899)':'var(--bg3)',transition:'background .3s',boxShadow:step>=s?'0 0 8px rgba(139,92,246,0.4)':'none' }}/>
           ))}
         </div>
 
-        {step===1 && (
+        {step===1&&(
           <form onSubmit={sendOtp} className="a3">
             <div className="form-group">
               <label>Phone number</label>
-              <input value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g,'').slice(0,10))}
-                placeholder="10-digit number" required inputMode="numeric" maxLength={10}/>
+              <input value={phone} onChange={e=>setPhone(e.target.value.replace(/\D/g,'').slice(0,10))} placeholder="10-digit number" required inputMode="numeric" maxLength={10}/>
             </div>
-            {error && <p className="err" style={{ marginBottom:12 }}>{error}</p>}
-            <button className="btn-primary" type="submit" disabled={loading||phone.length<10}>
-              {loading?'Sending OTP...':'Send OTP →'}
-            </button>
+            {error&&<p className="err" style={{ marginBottom:12 }}>{error}</p>}
+            <button className="btn-grad" type="submit" disabled={loading||phone.length<10}>{loading?'Sending OTP...':'Send OTP →'}</button>
           </form>
         )}
 
-        {step===2 && (
+        {step===2&&(
           <form onSubmit={reset} className="a3">
             <div className="form-group">
               <label>6-digit OTP</label>
-              <input value={otp} onChange={e => setOtp(e.target.value.replace(/\D/g,'').slice(0,6))}
+              <input value={otp} onChange={e=>setOtp(e.target.value.replace(/\D/g,'').slice(0,6))}
                 placeholder="0  0  0  0  0  0" required inputMode="numeric" maxLength={6}
-                style={{ letterSpacing:12,fontSize:24,textAlign:'center',fontFamily:'Space Grotesk,sans-serif' }}/>
-              <p style={{ color:'var(--muted)',fontSize:11,marginTop:6,textAlign:'center' }}>{otp.length}/6 entered</p>
+                style={{ letterSpacing:14,fontSize:26,textAlign:'center',fontFamily:'Syne,sans-serif',fontWeight:800 }}/>
+              <p style={{ color:'var(--muted)',fontSize:11,marginTop:6,textAlign:'center' }}>{otp.length}/6 digits entered</p>
             </div>
             <div className="form-group">
               <label>New password</label>
-              <input type="password" value={newPass} onChange={e=>setNewPass(e.target.value)}
-                placeholder="Min 6 characters" required minLength={6}/>
+              <input type="password" value={newPass} onChange={e=>setNewPass(e.target.value)} placeholder="Min 6 characters" required minLength={6}/>
             </div>
-            {error   && <p className="err" style={{ marginBottom:12 }}>{error}</p>}
-            {success && <p className="suc" style={{ marginBottom:12 }}>{success}</p>}
-            <button className="btn-primary" type="submit" disabled={loading||otp.length!==6}>
-              {loading?'Resetting...':'Reset Password →'}
-            </button>
-            <button type="button" className="btn-outline" style={{ marginTop:10 }}
-              onClick={() => { setStep(1); setError(''); setOtp(''); }}>
-              Resend OTP
-            </button>
+            {error&&<p className="err" style={{ marginBottom:12 }}>{error}</p>}
+            {success&&<p className="suc" style={{ marginBottom:12 }}>{success}</p>}
+            <button className="btn-grad" type="submit" disabled={loading||otp.length!==6}>{loading?'Resetting...':'Reset Password →'}</button>
+            <button type="button" className="btn-outline" style={{ marginTop:10 }} onClick={()=>{ setStep(1); setError(''); setOtp(''); }}>Resend OTP</button>
           </form>
         )}
       </div>

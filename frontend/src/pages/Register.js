@@ -41,20 +41,20 @@ export default function Register() {
 
   return (
     <div className="app-shell">
+      <div style={{ position:'fixed',top:-100,right:-100,width:300,height:300,borderRadius:'50%',background:'radial-gradient(circle,rgba(139,92,246,0.12),transparent 70%)',pointerEvents:'none' }}/>
       <div className="screen" style={{ display:'flex',flexDirection:'column',paddingBottom:30 }}>
         <button className="back-btn" onClick={() => navigate('/login')}>← Back</button>
         <div className="a1" style={{ marginBottom:24 }}>
-          <h1 style={{ fontSize:26 }}>{mode==='citizen'?'Create Account':'Admin Registration'}</h1>
-          <p style={{ color:'var(--muted)',marginTop:6,fontSize:14 }}>
-            {mode==='citizen'?'Free for all citizens':'For office administrators only'}
-          </p>
+          <h1 style={{ fontSize:28 }}>{mode==='citizen'?'Create Account':'Admin Setup'}</h1>
+          <p style={{ color:'var(--muted)',marginTop:6,fontSize:14 }}>{mode==='citizen'?'Free for all citizens':'Office administrator only'}</p>
         </div>
 
-        <div className="toggle-wrap a2">
+        <div className="pill-wrap a2">
           {['citizen','admin'].map(m => (
-            <button key={m} className="toggle-btn" onClick={()=>switchMode(m)} style={{
+            <button key={m} className="pill-btn" onClick={()=>switchMode(m)} style={{
               background:mode===m?'var(--white)':'transparent',
               color:mode===m?'var(--bg)':'var(--muted)',
+              boxShadow:mode===m?'0 2px 8px rgba(0,0,0,0.3)':'none',
             }}>{m==='citizen'?'Citizen':'Office Admin'}</button>
           ))}
         </div>
@@ -62,15 +62,12 @@ export default function Register() {
         <form onSubmit={submit} className="a3">
           <div className="form-group">
             <label>Full name</label>
-            <input name="name" value={form.name} onChange={handle} placeholder="Your full name" required/>
+            <input name="name" value={form.name} onChange={handle} placeholder="Your name" required/>
           </div>
           <div className="form-group">
             <label>Phone number</label>
-            <input name="phone" value={form.phone} onChange={handle}
-              placeholder="10-digit number" required inputMode="numeric" maxLength={10}/>
-            {form.phone.length>0 && form.phone.length<10 && (
-              <p style={{ color:'var(--muted)',fontSize:11,marginTop:5 }}>{10-form.phone.length} more digits needed</p>
-            )}
+            <input name="phone" value={form.phone} onChange={handle} placeholder="10-digit number" required inputMode="numeric" maxLength={10}/>
+            {form.phone.length>0&&form.phone.length<10&&<p style={{ color:'var(--muted)',fontSize:11,marginTop:5 }}>{10-form.phone.length} more digits</p>}
           </div>
           <div className="form-group">
             <label>Password</label>
@@ -90,21 +87,18 @@ export default function Register() {
                 <label>Admin secret key</label>
                 <input name="secretKey" value={form.secretKey} onChange={handle} placeholder="Key from administrator" required/>
               </div>
-              <div style={{ background:'rgba(224,82,82,0.05)',border:'1px solid rgba(224,82,82,0.15)',borderRadius:10,padding:'10px 14px',marginBottom:16 }}>
-                <p style={{ color:'var(--red)',fontSize:11 }}>Requires secret key from Smart Queue administrator.</p>
-              </div>
             </>
           )}
 
           {error && <p className="err" style={{ marginBottom:12 }}>{error}</p>}
-          <button className="btn-primary" type="submit" disabled={loading}>
+          <button className="btn-grad" type="submit" disabled={loading}>
             {loading?'Creating...':mode==='citizen'?'Create Account →':'Register as Admin →'}
           </button>
         </form>
 
         <p style={{ color:'var(--muted)',fontSize:13,textAlign:'center',marginTop:20 }}>
-          Already have an account?{' '}
-          <Link to="/login" style={{ color:'var(--white)',textDecoration:'none',fontWeight:600 }}>Login</Link>
+          Have an account?{' '}
+          <Link to="/login" style={{ background:'var(--grad1)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',textDecoration:'none',fontWeight:700 }}>Login</Link>
         </p>
       </div>
     </div>
