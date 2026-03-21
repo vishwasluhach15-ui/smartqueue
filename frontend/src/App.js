@@ -1,40 +1,49 @@
 import "./index.css";
+import { useState } from "react";
 
 function App() {
+  const [queue, setQueue] = useState([]);
+  const [current, setCurrent] = useState(null);
+
+  // Add new token
+  const addToken = () => {
+    const newToken = queue.length + 1;
+    setQueue([...queue, newToken]);
+  };
+
+  // Move to next
+  const nextToken = () => {
+    if (queue.length === 0) return;
+
+    setCurrent(queue[0]);
+    setQueue(queue.slice(1));
+  };
+
   return (
-    <div>
-      {/* Navbar */}
-      <header className="navbar">
-        <h1>Vishu</h1>
-        <nav>
-          <a href="#home">Home</a>
-          <a href="#projects">Projects</a>
-          <a href="#contact">Contact</a>
-        </nav>
-      </header>
+    <div className="container">
+      <h1>Smart Queue System 🚀</h1>
 
-      {/* Hero Section */}
-      <section id="home" className="hero">
-        <h2>Hi, I'm <span>Vishu</span></h2>
-        <p>Frontend Developer | Cyber Security Enthusiast</p>
-        <button>Explore</button>
-      </section>
+      {/* Current Token */}
+      <div className="current">
+        <h2>Current Token</h2>
+        <p>{current ? current : "None"}</p>
+      </div>
 
-      {/* Projects */}
-      <section id="projects" className="section">
-        <h2>Projects</h2>
-        <div className="cards">
-          <div className="card">Project 1</div>
-          <div className="card">Project 2</div>
-          <div className="card">Project 3</div>
-        </div>
-      </section>
+      {/* Buttons */}
+      <div className="buttons">
+        <button onClick={addToken}>Generate Token</button>
+        <button onClick={nextToken}>Next</button>
+      </div>
 
-      {/* Contact */}
-      <section id="contact" className="section">
-        <h2>Contact</h2>
-        <p>Email: your@email.com</p>
-      </section>
+      {/* Queue List */}
+      <div className="queue">
+        <h2>Queue List</h2>
+        {queue.length === 0 ? (
+          <p>No people in queue</p>
+        ) : (
+          queue.map((q, i) => <div key={i} className="token">{q}</div>)
+        )}
+      </div>
     </div>
   );
 }
